@@ -19,23 +19,6 @@ public class Matrix {
             case SUBJECTS -> MATRIX_FILE_PATH += "subjects.json";
         }
     }
-
-    public void write(Map<String, Map<String, List<String>>> map){
-        try {
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(MATRIX_FILE_PATH), map);
-        } catch (IOException e) {
-            System.err.println("Ошибка при записи в матрицу: " + e.getMessage());
-        }
-    }
-
-    public Map<String, Map<String, List<String>>> readMatrix() {
-        try {
-            return objectMapper.readValue(new File(MATRIX_FILE_PATH), new TypeReference<Map<String, Map<String, List<String>>>>() {});
-        } catch (IOException e) {
-            System.err.println("Ошибка при чтении матрицы: " + e.getMessage());
-            return null;
-        }
-    }
     public Map<String, String> readSecrecyLevels() {
         try {
             return objectMapper.readValue(new File(MATRIX_FILE_PATH), new TypeReference<Map<String, String>>() {});
