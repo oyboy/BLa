@@ -9,11 +9,20 @@ import java.util.Map;
 
 @CommandLine.Command(name="write", description = "write(subject, object_name, permission)")
 public class WriteCommand extends DefaultFields implements Runnable {
+    private final Matrix accessMatrix;
+    private final Matrix objectMatrix;
+
+    public WriteCommand(Matrix accessMatrix, Matrix objectMatrix) {
+        this.accessMatrix = accessMatrix;
+        this.objectMatrix = objectMatrix;
+    }
+
+    public WriteCommand() {
+        this(new Matrix(Type.SUBJECTS), new Matrix(Type.OBJECTS));
+    }
+
     @Override
     public void run() {
-        Matrix accessMatrix = new Matrix(Type.SUBJECTS);
-        Matrix objectMatrix = new Matrix(Type.OBJECTS);
-
         Map<String, String> subjectLevels = accessMatrix.readSecrecyLevels();
         Map<String, String> objectLevels = objectMatrix.readSecrecyLevels();
 
@@ -42,5 +51,4 @@ public class WriteCommand extends DefaultFields implements Runnable {
 
         return Integer.compare(subjectRank, objectRank);
     }
-
 }

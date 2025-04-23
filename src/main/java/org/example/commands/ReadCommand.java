@@ -9,11 +9,19 @@ import java.util.Map;
 
 @CommandLine.Command(name="read", description = "read(subject, object_name, permission)")
 public class ReadCommand extends DefaultFields implements Runnable {
+    private final Matrix accessMatrix;
+    private final Matrix objectMatrix;
+
+    public ReadCommand(Matrix accessMatrix, Matrix objectMatrix) {
+        this.accessMatrix = accessMatrix;
+        this.objectMatrix = objectMatrix;
+    }
+    public ReadCommand() {
+        this(new Matrix(Type.SUBJECTS), new Matrix(Type.OBJECTS));
+    }
+
     @Override
     public void run() {
-        Matrix accessMatrix = new Matrix(Type.SUBJECTS);
-        Matrix objectMatrix = new Matrix(Type.OBJECTS);
-
         Map<String, String> subjectLevels = accessMatrix.readSecrecyLevels();
         Map<String, String> objectLevels = objectMatrix.readSecrecyLevels();
 
