@@ -17,6 +17,7 @@ public class InitCommand implements Runnable {
 
             File objectsFile = new File("./system/objects.json");
             File subjectsFile = new File("./system/subjects.json");
+            File accessFile = new File("./system/access.json");
 
             boolean objectsCreated = objectsFile.createNewFile();
             boolean subjectsCreated = subjectsFile.createNewFile();
@@ -27,6 +28,9 @@ public class InitCommand implements Runnable {
             }
             if (subjectsCreated) {
                 mapper.writeValue(subjectsFile, new HashMap<>());
+            }
+            if (accessFile.createNewFile()) {
+                mapper.writeValue(accessFile, new HashMap<>());
             }
 
             System.out.println("Инициализация завершена.");

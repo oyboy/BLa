@@ -4,8 +4,7 @@ import org.example.Matrix;
 import org.example.Type;
 import picocli.CommandLine;
 
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @CommandLine.Command(name="create-object", description = "Создание нового объекта")
 public class CreateObjectCommand implements Runnable {
@@ -26,17 +25,41 @@ public class CreateObjectCommand implements Runnable {
         }
 
         Matrix objectMatrix = new Matrix(Type.OBJECTS);
-        Map<String, String> levels = objectMatrix.readSecrecyLevels();
+        Map<String, String> objectLevels = objectMatrix.readSecrecyLevels();
 
-        if (levels.containsKey(name)) {
+        if (objectLevels.containsKey(name)) {
             System.err.println("Ошибка: Объект с именем '" + name + "' уже существует");
             return;
         }
 
-        levels.put(name, level.toUpperCase());
+        objectLevels.put(name, upperLevel);
+        objectMatrix.writeSecrecyLevels(objectLevels);
 
-        objectMatrix.writeSecrecyLevels(levels);
+        Matrix subjectMatrix = new Matrix(Type.SUBJECTS);
+        Map<String, String> subjectLevels = subjectMatrix.readSecrecyLevels();
 
-        System.out.println("Объект " + name + " создан с уровнем " + level.toUpperCase());
+        Matrix accessMatrix = new Matrix(Type.ACCESS);
+        Map<String, Map<String, List<String>>> access = accessMatrix.readMatrix();
+
+        for (Map.Entry<String, String> subjectEntry : subjectLevels.entrySet()) {
+            String subject = subjectEntry.getKey();
+            String subjectLevel = subjectEntry.getValue();
+            /*В зависимости от уровня секретности в матрицу доступа записываются нужные права*/
+            List<String> rights = determineRights(subjectLevel, upperLevel);
+            access.computeIfAbsent(subject, k -> new HashMap<>()).put(name, rights);
+        }
+
+        accessMatrix.writeMatrix(access);
+        System.out.println("Объект " + name + " создан с уровнем " + upperLevel);
+    }
+
+    private List<String> determineRights(String subjectLevel, String objectLevel) {
+        Map<String, Integer> levelMap = Map.of("LOW", 1, "MEDIUM", 2, "HIGH", 3);
+        int sLevel = levelMap.getOrDefault(subjectLevel, 0);
+        int oLevel = levelMap.getOrDefault(objectLevel, 0);
+
+        if (sLevel == oLevel) return Arrays.asList("read", "write");
+        else if (sLevel > oLevel) return Collections.singletonList("read");
+        else return Collections.singletonList("write");
     }
 }

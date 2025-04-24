@@ -17,6 +17,7 @@ public class Matrix {
         switch (type){
             case OBJECTS -> MATRIX_FILE_PATH += "objects.json";
             case SUBJECTS -> MATRIX_FILE_PATH += "subjects.json";
+            case ACCESS -> MATRIX_FILE_PATH += "access.json";
         }
     }
     public Map<String, String> readSecrecyLevels() {
@@ -32,6 +33,22 @@ public class Matrix {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(MATRIX_FILE_PATH), levels);
         } catch (IOException e) {
             System.err.println("Ошибка при записи уровней секретности: " + e.getMessage());
+        }
+    }
+    public Map<String, Map<String, List<String>>> readMatrix() {
+        try {
+            return objectMapper.readValue(new File(MATRIX_FILE_PATH), new TypeReference<>() {});
+        } catch (IOException e) {
+            System.err.println("Ошибка при чтении матрицы прав: " + e.getMessage());
+            return new HashMap<>();
+        }
+    }
+
+    public void writeMatrix(Map<String, Map<String, List<String>>> matrix) {
+        try {
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(MATRIX_FILE_PATH), matrix);
+        } catch (IOException e) {
+            System.err.println("Ошибка при записи матрицы прав: " + e.getMessage());
         }
     }
 }

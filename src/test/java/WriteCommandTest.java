@@ -15,10 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class WriteCommandTest {
     @Mock
-    Matrix accessMatrix;
+    Matrix subjectMatrix;
 
     @Mock
     Matrix objectMatrix;
+
+    @Mock
+    Matrix acccessMatrix;
 
     @InjectMocks
     WriteCommand command;
@@ -26,12 +29,12 @@ class WriteCommandTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        command = new WriteCommand(accessMatrix, objectMatrix);
+        command = new WriteCommand(subjectMatrix, objectMatrix, acccessMatrix);
     }
 
     @Test
     void testWriteCommand_withSufficientPermissions() {
-        Mockito.when(accessMatrix.readSecrecyLevels()).thenReturn(Map.of("subject1", "LOW"));
+        Mockito.when(subjectMatrix.readSecrecyLevels()).thenReturn(Map.of("subject1", "LOW"));
         Mockito.when(objectMatrix.readSecrecyLevels()).thenReturn(Map.of("object1", "HIGH"));
 
         command.subject = "subject1";
@@ -48,7 +51,7 @@ class WriteCommandTest {
 
     @Test
     void testWriteCommand_withInsufficientPermissions() {
-        Mockito.when(accessMatrix.readSecrecyLevels()).thenReturn(Map.of("subject1", "HIGH"));
+        Mockito.when(subjectMatrix.readSecrecyLevels()).thenReturn(Map.of("subject1", "HIGH"));
         Mockito.when(objectMatrix.readSecrecyLevels()).thenReturn(Map.of("object1", "LOW"));
 
         command.subject = "subject1";
@@ -65,7 +68,7 @@ class WriteCommandTest {
 
     @Test
     void testWriteCommand_whenLevelsNotFound() {
-        Mockito.when(accessMatrix.readSecrecyLevels()).thenReturn(Map.of());
+        Mockito.when(subjectMatrix.readSecrecyLevels()).thenReturn(Map.of());
         Mockito.when(objectMatrix.readSecrecyLevels()).thenReturn(Map.of());
 
         command.subject = "unknownSubject";

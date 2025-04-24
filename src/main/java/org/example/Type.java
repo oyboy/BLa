@@ -1,5 +1,5 @@
 package org.example;
 
 public enum Type {
-    OBJECTS, SUBJECTS
+    OBJECTS, SUBJECTS, ACCESS
 }

@@ -35,10 +35,14 @@ public class CreateSubjectCommand implements Runnable {
             return;
         }
 
-        levels.put(name, level.toUpperCase());
-
+        levels.put(name, upperLevel);
         subjectMatrix.writeSecrecyLevels(levels);
 
-        System.out.println("Субъект " + name + " создан с уровнем " + level.toUpperCase());
+        Matrix accessMatrix = new Matrix(Type.ACCESS);
+        Map<String, Map<String, List<String>>> access = accessMatrix.readMatrix();
+        access.put(name, new HashMap<>());
+        accessMatrix.writeMatrix(access);
+
+        System.out.println("Субъект " + name + " создан с уровнем " + upperLevel);
     }
 }
